@@ -11,10 +11,8 @@ class WalletController extends AbstractController
     #[Route('/index')]
     public function index(): Response
     {
-        $number = random_int(100, 1000);
-
         return $this->render('wallet/index.html.twig', [
-            'number' => $number,
+            'number' => 11,
         ]);
     }
 }
