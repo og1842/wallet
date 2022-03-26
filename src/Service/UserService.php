@@ -83,6 +83,7 @@ class UserService
         }
 
         $user->setFacebookId($facebookId);
+        $user->setIsVerified(true);
 
         try {
             $this->repository->save($user);
