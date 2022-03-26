@@ -12,6 +12,10 @@
 {% endblock %}
 {% block body %}
     {% block page_contents %}
+        {% for flash_error in app.flashes('facebook_login_error') %}
+            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        {% endfor %}
+
         <a href="{{ path('app_login') }}">Login</a>
         <br>
         <br>

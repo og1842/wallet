@@ -18,10 +18,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: 'string')]
-    private string $firstName;
+    private string $firstName = '';
 
     #[ORM\Column(type: 'string')]
-    private string $lastName;
+    private string $lastName = '';
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email;
@@ -30,7 +30,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
-    private string $password;
+    private string $password = '';
+
+    #[ORM\Column(type: 'string')]
+    private string $facebookId = '';
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
@@ -126,6 +129,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookId(): string
+    {
+        return $this->facebookId;
+    }
+
+    /**
+     * @param string $facebookId
+     */
+    public function setFacebookId(string $facebookId): void
+    {
+        $this->facebookId = $facebookId;
     }
 
     /**

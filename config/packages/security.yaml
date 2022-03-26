@@ -33,7 +33,8 @@ security:
 
             logout:
                 path: app_logout
-
+            custom_authenticators:
+                - App\Security\FacebookAuthenticator
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
