@@ -12,7 +12,11 @@
 {% endblock %}
 {% block body %}
     <a href="{{ path('app_logout') }}">Logout</a>
-    <h1>todo implement</h1>
+    <br>
+    <br>
+
+    <div>Hello {{ user.firstName }} {{ user.lastName }}</div>
+    <div>{{ user.email }}</div>
 
     {% block page_contents %}
 

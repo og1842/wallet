@@ -8,11 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class WalletController extends AbstractController
 {
-    #[Route('/index')]
+    #[Route('/wallet', name: 'app_wallet_index')]
     public function index(): Response
     {
         return $this->render('wallet/index.html.twig', [
-            'number' => 11,
         ]);
     }
 }
