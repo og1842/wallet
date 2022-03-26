@@ -51,7 +51,7 @@ class FacebookController extends AbstractController
 
             // do something with all this new power!
             // e.g. $name = $user->getFirstName();
-            var_dump($user);
+            dd($user);
             die;
             // ...
         } catch (IdentityProviderException $e) {
