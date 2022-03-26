@@ -29,6 +29,18 @@ class UserService
         return $this->security->isGranted('ROLE_USER');
     }
 
+    public function getById(int $id): ?User
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * Register with facebook user
+     *
+     * @param FacebookUser $facebookUser
+     *
+     * @return User|null
+     */
     public function registerWithFacebookUser(FacebookUser $facebookUser): ?User
     {
         $facebookId = $facebookUser->getId();

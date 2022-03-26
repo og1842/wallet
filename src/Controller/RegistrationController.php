@@ -61,7 +61,7 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            $this->addFlash('success', 'You successfully registered, please confirm yor email.');
+            $this->addFlash('success', 'You have successfully registered, please confirm your email address.');
 
             return $this->redirectToRoute('app_wallet_index');
         }
@@ -72,15 +72,15 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
+    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
-        $id = $request->get('id');
+        $id = (int)$request->get('id');
 
-        if (null === $id) {
+        if (!$id) {
             return $this->redirectToRoute('app_register');
         }
 
-        $user = $userRepository->find($id); // todo move to service
+        $user = $this->userService->getById($id);
 
         if (null === $user) {
             return $this->redirectToRoute('app_register');
