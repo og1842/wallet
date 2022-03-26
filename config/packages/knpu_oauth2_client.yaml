@@ -13,7 +13,7 @@ knpu_oauth2_client:
       # see the controller example below
       redirect_route: connect_facebook_check
       redirect_params: { }
-      graph_api_version: v13
+      graph_api_version: v13.0
 
     # will create service: "knpu.oauth2.client.google"
     # an instance of: KnpU\OAuth2ClientBundle\Client\Provider\GoogleClient
