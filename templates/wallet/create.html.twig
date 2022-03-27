@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% include 'flash-messages.twig' %}
-
     <form action="{{ path('app_wallet_create') }}" method="post">
         <input type="text" value="" name="wallet_name" required="required" autocomplete="off">
         <select name="wallet_type" autocomplete="off">

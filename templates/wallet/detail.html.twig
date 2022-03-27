@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% include 'flash-messages.twig' %}
-    {% include 'logout.twig' %}
-
     <div>Name {{ wallet.name }}</div>
     <div>Type {{ wallet.walletTypeForView }}</div>
     <div>Balance {{ wallet.balanceForView }}</div>
