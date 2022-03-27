@@ -30,7 +30,7 @@ class WalletValidator
             throw new RuntimeException('Invalid wallet type.');
         }
 
-        if (!in_array($walletType, Wallet::WALLET_TYPES, true)) {
+        if (!isset(Wallet::WALLET_TYPES[$walletType])) {
             throw new RuntimeException('Invalid wallet type.');
         }
     }
