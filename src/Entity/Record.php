@@ -68,6 +68,14 @@ class Record
         return $this->amount;
     }
 
+    /**
+     * @return float
+     */
+    public function getAmountForView(): float
+    {
+        return round($this->amount / 100, 2);
+    }
+
     public function setAmount(int $amount): self
     {
         $this->amount = $amount;

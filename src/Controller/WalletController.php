@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Wallet;
 use App\Security\WalletValidator;
+use App\Service\AmountConverter;
 use App\Service\WalletService;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -80,6 +81,10 @@ class WalletController extends AbstractController
 
         $wallet = $this->walletService->getUserWalletById($id, $user->getId());
 
+//        $wallets = $this->walletService->getUserWallets($user->getId());
+        //todo implement
+
+
         return $this->render('wallet/detail.html.twig', ['wallet' => $wallet]);
     }
 
@@ -94,5 +99,49 @@ class WalletController extends AbstractController
         $this->addFlash('success', 'Wallet successfully deleted.');
 
         return $this->redirectToRoute('app_wallet_index');
+    }
+
+    #[Route('/wallet/transfer/from/{fromWalletId}/to/{toWalletId}', name: 'app_wallet_transfer_from_to', methods: ['POST'])]
+    public function transferFromWalletToWallet(string $fromWalletId, string $toWalletId)
+    {
+        //todo implement
+    }
+
+    #[Route('/wallet/fill/{id}', name: 'app_wallet_fill', methods: ['POST'])]
+    public function fill(string $id, Request $request): RedirectResponse
+    {
+        $name = (string)$request->request->get('name');
+
+        if (!$name) {
+            $this->addFlash('error', 'Please enter record name.');
+
+            return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
+        }
+
+        $amountStr = (string)$request->request->get('amount');
+
+        if (!$amountStr) {
+            $this->addFlash('error', 'Please enter amount.');
+
+            return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
+        }
+
+        $amount = AmountConverter::convert($amountStr);
+
+        if ($amount === 0) {
+            $this->addFlash('error', 'incorrect amount.');
+
+            return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
+        }
+
+        $status = $this->walletService->fillBalance($id, $amount, $name);
+
+        if ($status) {
+            $this->addFlash('success', 'Balance successfully filled.');
+        } else {
+            $this->addFlash('error', 'Balance filling error.');
+        }
+
+        return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
     }
 }

@@ -86,6 +86,21 @@ class Wallet
         return $this->balance;
     }
 
+    /**
+     * @return float
+     */
+    public function getBalanceForView(): float
+    {
+        return round($this->balance / 100, 2);
+    }
+
+    public function increaseBalance(int $balance): self
+    {
+        $this->balance += $balance;
+
+        return $this;
+    }
+
     public function setBalance(int $balance): self
     {
         $this->balance = $balance;

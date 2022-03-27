@@ -7,7 +7,7 @@
 
     {% for record in records %}
         <div>Name: {{ record.name }}</div>
-        <div>Amount: {{ record.amount }}</div>
+        <div>Amount: {{ record.amountForView }}</div>
         <div>
             Transferred: {% if record.fromWallet %}from {{ record.fromWallet.name }} {% endif %}
             to {{ record.toWallet.name }}

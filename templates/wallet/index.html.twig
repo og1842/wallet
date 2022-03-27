@@ -11,7 +11,7 @@
     {% for wallet in wallets %}
         <div>Name {{ wallet.name }}</div>
         <div>Type {{ wallet.walletTypeForView }}</div>
-        <div>Balance {{ wallet.balance }}</div>
+        <div>Balance {{ wallet.walletTypeForView }}</div>
         <div>Created at {{ wallet.createdAt.format('Y-m-d') }}</div>
 
         <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>

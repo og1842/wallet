@@ -87,4 +87,26 @@ class WalletService
         $this->repository->deleteUserWalletById($id, $userId);
     }
 
+    /**
+     * Fill balance by increasing wallet balance and adding record with transaction
+     *
+     * @param string $id
+     * @param int $amount
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function fillBalance(string $id, int $amount, string $name): bool
+    {
+        try {
+            $this->repository->fillBalance($id, $amount, $name);
+        } catch (Throwable $ex) {
+            $this->logger->error('Unable to fill balance', ['id' => $id, 'amount' => $amount, 'message' => $ex->getMessage()]);
+
+            return false;
+        }
+
+        return true;
+    }
+
 }

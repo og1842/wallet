@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Record;
 use App\Entity\Wallet;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Throwable;
 
@@ -54,15 +57,6 @@ class WalletRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws Throwable
-     */
-    public function remove(Wallet $entity): void
-    {
-        $this->_em->remove($entity);
-        $this->_em->flush();
-    }
-
-    /**
      * Get user wallet by id
      *
      * @param string $id
@@ -106,4 +100,34 @@ class WalletRepository extends ServiceEntityRepository
 
         $qb->getQuery()->execute();
     }
+
+    /**
+     * Fill balance by increasing wallet balance and adding record with transaction
+     *
+     * @param string $id
+     * @param int $amount
+     * @param string $name
+     */
+    public function fillBalance(string $id, int $amount, string $name): void
+    {
+        $this->_em->wrapInTransaction(function (EntityManagerInterface $em) use ($id, $amount, $name) {
+            $wallet = $em->find(Wallet::class, $id);
+
+            if (!$wallet) {
+                return;
+            }
+
+            $wallet->increaseBalance($amount);
+            $wallet->setUpdatedAt(new DateTimeImmutable());
+
+            $record = new Record();
+
+            $record->setToWallet($wallet);
+            $record->setName($name);
+            $record->setAmount($amount);
+
+            $em->persist($record);
+        });
+    }
+
 }
