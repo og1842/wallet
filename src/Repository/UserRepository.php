@@ -34,15 +34,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * @throws Throwable
-     */
-    public function remove(User $entity): void
-    {
-        $this->_em->remove($entity);
-        $this->_em->flush();
-    }
-
-    /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void

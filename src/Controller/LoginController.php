@@ -17,7 +17,7 @@ class LoginController extends AbstractController
         $this->userService = $userService;
     }
 
-    #[Route('/login', name: 'app_login')]
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->userService->isLoggedIn()) {

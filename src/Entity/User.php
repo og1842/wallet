@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -15,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(type: 'string')]
     private string $firstName = '';
@@ -41,7 +44,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
-    public function getId(): ?int
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Wallet::class)]
+    private Collection $wallets;
+
+    #[Pure] public function __construct()
+    {
+        $this->wallets = new ArrayCollection();
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
@@ -183,6 +194,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wallet>
+     */
+    public function getWallets(): Collection
+    {
+        return $this->wallets;
+    }
+
+    public function addWallet(Wallet $wallet): self
+    {
+        if (!$this->wallets->contains($wallet)) {
+            $this->wallets[] = $wallet;
+            $wallet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWallet(Wallet $wallet): self
+    {
+        if ($this->wallets->removeElement($wallet)) {
+            // set the owning side to null (unless already changed)
+            if ($wallet->getUser() === $this) {
+                $wallet->setUser(null);
+            }
+        }
 
         return $this;
     }

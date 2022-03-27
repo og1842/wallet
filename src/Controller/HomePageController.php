@@ -16,7 +16,7 @@ class HomePageController extends AbstractController
         $this->userService = $userService;
     }
 
-    #[Route('/', name: 'app_home')]
+    #[Route('/', name: 'app_home', methods: ['GET'])]
     public function home(): Response
     {
         if ($this->userService->isLoggedIn()) {

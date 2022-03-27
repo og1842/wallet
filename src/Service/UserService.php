@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use League\OAuth2\Client\Provider\FacebookUser;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Security;
 use Throwable;
 
@@ -15,14 +16,16 @@ class UserService
     private Security $security;
     private UserRepository $repository;
     private LoggerInterface $logger;
+    private UserPasswordHasherInterface $userPasswordHasher;
 
-    public function __construct(Security $security, UserRepository $userRepository, LoggerInterface $logger)
+    public function __construct(Security $security, UserRepository $userRepository, LoggerInterface $logger, UserPasswordHasherInterface $userPasswordHasher)
     {
         // Avoid calling getUser() in the constructor: auth may not
         // be complete yet. Instead, store the entire Security object.
         $this->security = $security;
         $this->repository = $userRepository;
         $this->logger = $logger;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     public function isLoggedIn(): bool
@@ -173,7 +176,36 @@ class UserService
         try {
             $this->repository->save($user);
         } catch (Throwable $ex) {
-            $this->logger->error('Unable to verify user');
+            $this->logger->error('Unable to verify user', ['message' => $ex->getMessage()]);
         }
+    }
+
+    /**
+     * Register user
+     *
+     * @param User $user
+     * @param string $plainPassword
+     *
+     * @return bool
+     */
+    public function register(User $user, string $plainPassword): bool
+    {
+        // encode the plain password
+        $user->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $user,
+                $plainPassword
+            )
+        );
+
+        try {
+            $this->repository->save($user);
+        } catch (Throwable $ex) {
+            $this->logger->error('Unable to register user', ['message' => $ex->getMessage()]);
+
+            return false;
+        }
+
+        return true;
     }
 }

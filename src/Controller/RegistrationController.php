@@ -6,14 +6,12 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use App\Service\UserService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -29,8 +27,8 @@ class RegistrationController extends AbstractController
         $this->userService = $userService;
     }
 
-    #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    public function register(Request $request): Response
     {
         if ($this->userService->isLoggedIn()) {
             return $this->redirectToRoute('app_wallet_index');
@@ -41,16 +39,13 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $success = $this->userService->register($user, $form->get('plainPassword')->getData());
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if (!$success) {
+                $this->addFlash('error', 'Unable register user.');
+
+                return $this->redirectToRoute('app_register');
+            }
 
             try {
                 // generate a signed url and email it to the user
@@ -75,7 +70,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email', name: 'app_verify_email')]
+    #[Route('/verify/email', name: 'app_verify_email', methods: ['GET'])]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
         $id = (int)$request->get('id');
@@ -94,7 +89,7 @@ class RegistrationController extends AbstractController
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+            $this->addFlash('error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
             return $this->redirectToRoute('app_register');
         }

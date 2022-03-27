@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'flash-messages.twig' %}
+    {% include 'logout.twig' %}
+
+    {{ wallet.name }}
+    {{ wallet.walletType }}
+    {{ wallet.balance }}
+    {{ wallet.createdAt.format('Y-m-d') }}
+
+    <br>
+    <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
+{% endblock %}

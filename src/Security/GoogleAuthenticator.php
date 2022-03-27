@@ -62,6 +62,8 @@ class GoogleAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $request->getSession()->getFlashBag()->add('success', 'You have successfully registered with Google.');
+
         $targetUrl = $this->router->generate('app_wallet_index');
 
         return new RedirectResponse($targetUrl);

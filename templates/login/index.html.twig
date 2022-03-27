@@ -7,13 +7,7 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="flash-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
+    {% include 'flash-messages.twig' %}
 
     <form action="{{ path('app_login') }}" method="post">
         <label for="username">Email:</label>

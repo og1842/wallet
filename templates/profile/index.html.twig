@@ -1,18 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-
-    {{ encore_entry_link_tags('wallet') }}
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-
-    {{ encore_entry_script_tags('wallet') }}
-{% endblock %}
 {% block body %}
-    <a href="{{ path('app_logout') }}">Logout</a>
-    <br>
+    {% include 'logout.twig' %}
+
     <br>
 
     <div>Hello {{ user.firstName }} {{ user.lastName }}</div>

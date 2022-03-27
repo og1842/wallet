@@ -9,15 +9,6 @@
       "css": [
         "/build/app.b75294ae.css"
       ]
-    },
-    "wallet": {
-      "js": [
-        "/build/runtime.61b1725c.js",
-        "/build/wallet.58f536fe.js"
-      ],
-      "css": [
-        "/build/wallet.92d1df5b.css"
-      ]
     }
   }
 }
