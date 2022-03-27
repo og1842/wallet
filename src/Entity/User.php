@@ -35,6 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $facebookId = '';
 
+    #[ORM\Column(type: 'string')]
+    private string $googleId = '';
+
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
@@ -145,6 +148,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFacebookId(string $facebookId): void
     {
         $this->facebookId = $facebookId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGoogleId(): string
+    {
+        return $this->googleId;
+    }
+
+    /**
+     * @param string $googleId
+     */
+    public function setGoogleId(string $googleId): void
+    {
+        $this->googleId = $googleId;
     }
 
     /**

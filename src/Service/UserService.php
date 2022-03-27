@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use League\OAuth2\Client\Provider\FacebookUser;
+use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 use Throwable;
@@ -88,11 +89,91 @@ class UserService
         try {
             $this->repository->save($user);
         } catch (Throwable $ex) {
-            $this->logger->error('Unable to save user.', ['email' => $email, 'message' => $ex->getMessage()]);
+            $this->logger->error('Unable to save facebook user.', ['email' => $email, 'message' => $ex->getMessage()]);
 
             return null;
         }
 
         return $user;
+    }
+
+    /**
+     * Register with google user
+     *
+     * @param GoogleUser $googleUser
+     *
+     * @return User|null
+     */
+    public function registerWithGoogleUser(GoogleUser $googleUser): ?User
+    {
+        $googleId = $googleUser->getId();
+
+        if (!$googleId) {
+            return null;
+        }
+
+        $email = $googleUser->getEmail();
+
+        if (!$email) {
+            return null;
+        }
+
+        // 1) have they logged in with Google before?
+        $existingGoogleUser = $this->repository->findOneBy(['googleId' => $googleId]);
+
+        if ($existingGoogleUser) {
+            return $existingGoogleUser;
+        }
+
+        // 2) do we have a matching user by email?
+        $user = $this->repository->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            $user = new User();
+
+            $user->setEmail($email);
+
+            $firstName = $googleUser->getFirstName();
+            $lastName = $googleUser->getLastName();
+
+            if ($firstName) {
+                $user->setFirstName($firstName);
+            }
+
+            if ($lastName) {
+                $user->setLastName($lastName);
+            }
+        }
+
+        $user->setGoogleId($googleId);
+        $user->setIsVerified(true);
+
+        try {
+            $this->repository->save($user);
+        } catch (Throwable $ex) {
+            $this->logger->error('Unable to save google user.', ['email' => $email, 'message' => $ex->getMessage()]);
+
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Verify user
+     *
+     * @param User $user
+     *
+     * @return void
+     */
+    public function verifyUser(User $user): void
+    {
+        $user->setIsVerified(true);
+
+        try {
+            $this->repository->save($user);
+        } catch (Throwable $ex) {
+            $this->logger->error('Unable to verify user');
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Security;
 use App\Service\UserService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
-use League\OAuth2\Client\Provider\FacebookUser;
+use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class FacebookAuthenticator extends OAuth2Authenticator
+class GoogleAuthenticator extends OAuth2Authenticator
 {
     private ClientRegistry $clientRegistry;
     private UserService $userService;
@@ -35,24 +35,24 @@ class FacebookAuthenticator extends OAuth2Authenticator
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        return $request->attributes->get('_route') === 'connect_facebook_check';
+        return $request->attributes->get('_route') === 'connect_google_check';
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('facebook');
+        $client = $this->clientRegistry->getClient('google');
 
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var FacebookUser $facebookUser */
-                $facebookUser = $client->fetchUserFromToken($accessToken);
+                /** @var GoogleUser $googleUser */
+                $googleUser = $client->fetchUserFromToken($accessToken);
 
-                $user = $this->userService->registerWithFacebookUser($facebookUser);
+                $user = $this->userService->registerWithGoogleUser($googleUser);
 
                 if (!$user) {
-                    throw new AuthenticationException('Unable to login/register with facebook.');
+                    throw new AuthenticationException('Unable to login/register with google.');
                 }
 
                 return $user;
@@ -71,9 +71,9 @@ class FacebookAuthenticator extends OAuth2Authenticator
     {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
-        $this->logger->error('Unable to login/register with facebook', ['message' => $message]);
+        $this->logger->error('Unable to login/register with google', ['message' => $message]);
 
-        $request->getSession()->getFlashBag()->add('error', 'Unable to login/register with facebook.');
+        $request->getSession()->getFlashBag()->add('error', 'Unable to login/register with google.');
 
         $targetUrl = $this->router->generate('app_home');
 
