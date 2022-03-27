@@ -38,4 +38,24 @@ class RecordRepository extends ServiceEntityRepository
 
     }
 
+    /**
+     * Get user records
+     *
+     * @param int $userId
+     *
+     * @return Record[]
+     */
+    public function getUserRecords(int $userId): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('r', 'fromWallet', 'toWallet')
+            ->leftJoin('r.fromWallet', 'fromWallet')
+            ->leftJoin('r.toWallet', 'toWallet')
+            ->where('toWallet.userId = :userId')
+            ->setParameter('userId', $userId)
+            ->addOrderBy('r.createdAt', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

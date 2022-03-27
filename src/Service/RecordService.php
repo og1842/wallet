@@ -28,4 +28,16 @@ class RecordService
     {
         return $this->repository->getWalletRecords($walletId);
     }
+
+    /**
+     * Get user records
+     *
+     * @param int $userId
+     *
+     * @return Record[]
+     */
+    public function getUserRecords(int $userId): array
+    {
+        return $this->repository->getUserRecords($userId);
+    }
 }

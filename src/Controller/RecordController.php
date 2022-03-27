@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Service\RecordService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +23,17 @@ class RecordController extends AbstractController
         $walletRecords = $this->recordService->getWalletRecords($walletId);
 
         return $this->render('wallet/wallet-records.html.twig', ['walletId' => $walletId, 'walletRecords' => $walletRecords]);
+    }
+
+    #[Route('/records', name: 'app_records', methods: ['GET'])]
+    public function records(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $records = $this->recordService->getUserRecords($user->getId());
+
+        return $this->render('record/index.html.twig', ['records' => $records]);
     }
 
 }
