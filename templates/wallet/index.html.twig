@@ -3,17 +3,21 @@
 {% block body %}
     {% include 'flash-messages.twig' %}
     {% include 'logout.twig' %}
+    <br>
+    <a href="{{ path('app_wallet_create') }}">Create wallet</a>
+    <br>
+    <br>
 
     {% for wallet in wallets %}
-        <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>
-        {{ wallet.name }}
-        {{ wallet.walletType }}
-        {{ wallet.balance }}
-        {{ wallet.createdAt.format('Y-m-d') }}
-        <br>
-        <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
-    {% endfor %}
+        <div>Name {{ wallet.name }}</div>
+        <div>Type {{ wallet.walletTypeForView }}</div>
+        <div>Balance {{ wallet.balance }}</div>
+        <div>Created at {{ wallet.createdAt.format('Y-m-d') }}</div>
 
-    <a href="{{ path('app_wallet_create') }}">Create wallet</a>
+        <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>
+        <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
+        <br>
+        <br>
+    {% endfor %}
 
 {% endblock %}

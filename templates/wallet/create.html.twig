@@ -6,8 +6,10 @@
     <form action="{{ path('app_wallet_create') }}" method="post">
         <input type="text" value="" name="wallet_name" required="required" autocomplete="off">
         <select name="wallet_type" autocomplete="off">
-            <option value="credit_card">Credit card</option>
-            <option value="cash">Cash</option>
+            {% for type in wallet_types %}
+                <option value="credit_card">Credit card</option>
+                <option value="cash">Cash</option>
+            {% endfor %}
         </select>
 
         <button type="submit">Create</button>

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for record in walletRecords %}
+        <div>Name: {{ record.name }}</div>
+        <div>Amount: {{ record.amount }}</div>
+        <div>Type: {{ record.type(walletId) }}</div>
+        <div>Created at: {{ record.createdAt.format('Y-m-d H:i:s') }}</div>
+        <br>
+    {% endfor %}
+
+{% endblock %}

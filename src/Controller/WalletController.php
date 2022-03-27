@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Wallet;
 use App\Security\WalletValidator;
 use App\Service\WalletService;
 use RuntimeException;
@@ -42,7 +43,7 @@ class WalletController extends AbstractController
     public function create(Request $request): Response
     {
         if ($request->isMethod('get')) {
-            return $this->render('wallet/create.html.twig');
+            return $this->render('wallet/create.html.twig', ['wallet_types' => Wallet::WALLET_TYPES]);
         }
 
         try {

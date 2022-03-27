@@ -12,7 +12,7 @@ class Wallet
     private const WALLET_TYPE_CREDIT_CARD = 'credit_card';
     private const WALLET_TYPE_CASH = 'cash';
 
-    public const WALLET_TYPES = [self::WALLET_TYPE_CREDIT_CARD, self::WALLET_TYPE_CASH];
+    public const WALLET_TYPES = [self::WALLET_TYPE_CREDIT_CARD => 'Credit card', self::WALLET_TYPE_CASH => 'Cash'];
 
     #[ORM\Id]
     #[ORM\Column(type: 'string', length: 32)]
@@ -67,6 +67,11 @@ class Wallet
     public function getWalletType(): string
     {
         return $this->walletType;
+    }
+
+    public function getWalletTypeForView(): string
+    {
+        return self::WALLET_TYPES[$this->walletType];
     }
 
     public function setWalletType(string $walletType): self

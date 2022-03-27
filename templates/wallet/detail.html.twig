@@ -4,11 +4,12 @@
     {% include 'flash-messages.twig' %}
     {% include 'logout.twig' %}
 
-    {{ wallet.name }}
-    {{ wallet.walletType }}
-    {{ wallet.balance }}
-    {{ wallet.createdAt.format('Y-m-d') }}
+    <div>Name {{ wallet.name }}</div>
+    <div>Type {{ wallet.walletTypeForView }}</div>
+    <div>Balance {{ wallet.balance }}</div>
+    <div>Created at {{ wallet.createdAt.format('Y-m-d') }}</div>
 
     <br>
     <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
+    <a href="{{ path('app_wallet_records', {'walletId': wallet.id}) }}">Wallet records</a>
 {% endblock %}
