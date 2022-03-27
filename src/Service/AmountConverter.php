@@ -37,7 +37,7 @@ class AmountConverter
             return 0;
         }
 
-        if ($converted > 999999999) {
+        if ($converted > 9999999900) {
             return 0;
         }
 
