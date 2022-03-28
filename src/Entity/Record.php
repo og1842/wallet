@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RecordRepository;
+use App\Security\Uuid;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,7 +42,7 @@ class Record
 
     public function __construct(string $id = null)
     {
-        $this->id = $id ?? IdGenerator::generate();
+        $this->id = $id ?? Uuid::generate();
         $this->fromWalletId = null;
         $this->createdAt = new DateTimeImmutable();
     }

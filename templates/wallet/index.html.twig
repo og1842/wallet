@@ -1,8 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <a href="{{ path('app_records') }}">Records</a>
+
     <br>
     <a href="{{ path('app_wallet_create') }}">Create wallet</a>
+    <br>
+    <br>
+
+    {% include 'wallet/transfer.html.twig' %}
     <br>
     <br>
 

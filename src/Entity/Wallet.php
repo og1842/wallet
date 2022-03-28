@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\WalletRepository;
+use App\Security\Uuid;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -42,7 +43,7 @@ class Wallet
 
     public function __construct(string $id = null)
     {
-        $this->id = $id ?? IdGenerator::generate();
+        $this->id = $id ?? Uuid::generate();
         $this->balance = 0;
         $this->createdAt = new DateTimeImmutable();
     }
@@ -97,6 +98,13 @@ class Wallet
     public function increaseBalance(int $balance): self
     {
         $this->balance += $balance;
+
+        return $this;
+    }
+
+    public function decreaseBalance(int $balance): self
+    {
+        $this->balance -= $balance;
 
         return $this;
     }

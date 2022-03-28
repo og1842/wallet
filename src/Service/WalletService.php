@@ -88,25 +88,94 @@ class WalletService
     }
 
     /**
-     * Fill balance by increasing wallet balance and adding record with transaction
+     * Fill user balance by increasing wallet balance and adding record with transaction
      *
+     * @param int $userId
      * @param string $id
      * @param int $amount
      * @param string $name
      *
      * @return bool
      */
-    public function fillBalance(string $id, int $amount, string $name): bool
+    public function fillUserBalance(int $userId, string $id, int $amount, string $name): bool
     {
+        $wallet = $this->getUserWalletById($id, $userId);
+
+        if (!$wallet) {
+            return false;
+        }
+
         try {
-            $this->repository->fillBalance($id, $amount, $name);
+            $success = $this->repository->fillBalance($wallet, $amount, $name);
         } catch (Throwable $ex) {
             $this->logger->error('Unable to fill balance', ['id' => $id, 'amount' => $amount, 'message' => $ex->getMessage()]);
 
             return false;
         }
 
+        return $success;
+    }
+
+    /**
+     * Transfer between user wallets and add record with transaction
+     *
+     * @param int $userId
+     * @param string $fromWalletId
+     * @param string $toWalletId
+     * @param int $amount
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function transfer(int $userId, string $fromWalletId, string $toWalletId, int $amount, string $name): bool
+    {
+        if ($fromWalletId === $toWalletId) {
+            return false;
+        }
+
+        $fromWallet = $this->getUserWalletById($fromWalletId, $userId);
+
+        if (!$fromWallet) {
+            return false;
+        }
+
+        $toWallet = $this->getUserWalletById($toWalletId, $userId);
+
+        if (!$toWallet) {
+            return false;
+        }
+
+        $isValid = $this->validateWalletBalanceForTransfer($fromWallet, $amount);
+
+        if (!$isValid) {
+            return false;
+        }
+
+        try {
+            $this->repository->transfer($fromWallet, $toWallet, $amount, $name);
+        } catch (Throwable $ex) {
+            $this->logger->error('Unable to fill balance', [
+                    'fromWalletId' => $fromWalletId, 'toWalletId' => $toWalletId, 'amount' => $amount, 'message' => $ex->getMessage()
+                ]
+            );
+
+            return false;
+        }
+
         return true;
+    }
+
+    /**
+     * Validate wallet balance for transfer
+     *
+     * @param Wallet $fromWallet
+     * @param int $amount
+     *
+     * @return bool
+     */
+    private function validateWalletBalanceForTransfer(Wallet $fromWallet, int $amount): bool
+    {
+        return $fromWallet->getBalance() >= $amount;
     }
 
 }

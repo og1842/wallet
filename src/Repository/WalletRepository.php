@@ -104,19 +104,15 @@ class WalletRepository extends ServiceEntityRepository
     /**
      * Fill balance by increasing wallet balance and adding record with transaction
      *
-     * @param string $id
+     * @param Wallet $wallet
      * @param int $amount
      * @param string $name
+     *
+     * @return bool
      */
-    public function fillBalance(string $id, int $amount, string $name): void
+    public function fillBalance(Wallet $wallet, int $amount, string $name): bool
     {
-        $this->_em->wrapInTransaction(function (EntityManagerInterface $em) use ($id, $amount, $name) {
-            $wallet = $em->find(Wallet::class, $id);
-
-            if (!$wallet) {
-                return;
-            }
-
+        $this->_em->wrapInTransaction(function (EntityManagerInterface $em) use ($wallet, $amount, $name) {
             $wallet->increaseBalance($amount);
             $wallet->setUpdatedAt(new DateTimeImmutable());
 
@@ -128,6 +124,40 @@ class WalletRepository extends ServiceEntityRepository
 
             $em->persist($record);
         });
+
+        return true;
+    }
+
+    /**
+     * Transfer between wallets and add record with transaction
+     *
+     * @param Wallet $fromWallet
+     * @param Wallet $toWallet
+     * @param int $amount
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function transfer(Wallet $fromWallet, Wallet $toWallet, int $amount, string $name): bool
+    {
+        $this->_em->wrapInTransaction(function (EntityManagerInterface $em) use ($fromWallet, $toWallet, $amount, $name) {
+            $fromWallet->decreaseBalance($amount);
+            $fromWallet->setUpdatedAt(new DateTimeImmutable());
+
+            $toWallet->increaseBalance($amount);
+            $toWallet->setUpdatedAt(new DateTimeImmutable());
+
+            $record = new Record();
+
+            $record->setFromWallet($fromWallet);
+            $record->setToWallet($toWallet);
+            $record->setName($name);
+            $record->setAmount($amount);
+
+            $em->persist($record);
+        });
+
+        return true;
     }
 
 }

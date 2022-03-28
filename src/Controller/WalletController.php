@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Wallet;
+use App\Security\Uuid;
 use App\Security\WalletValidator;
 use App\Service\AmountConverter;
 use App\Service\WalletService;
@@ -11,6 +12,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -47,17 +49,17 @@ class WalletController extends AbstractController
             return $this->render('wallet/create.html.twig', ['wallet_types' => Wallet::WALLET_TYPES]);
         }
 
+        $walletName = (string)$request->request->get('wallet_name');
+
+        $walletType = (string)$request->request->get('wallet_type');
+
         try {
-            $this->walletValidator->validateRequestParamsForCreation($request);
+            $this->walletValidator->validateRequestParamsForCreation($walletName, $walletType);
         } catch (RuntimeException $ex) {
             $this->addFlash('error', $ex->getMessage());
 
             return $this->redirectToRoute('app_wallet_index');
         }
-
-        $walletName = (string)$request->request->get('wallet_name');
-
-        $walletType = (string)$request->request->get('wallet_type');
 
         /** @var User $user */
         $user = $this->getUser();
@@ -76,14 +78,14 @@ class WalletController extends AbstractController
     #[Route('/wallet/detail/{id}', name: 'app_wallet_detail', methods: ['GET'])]
     public function detail(string $id): Response
     {
+        if (!Uuid::isValid($id)) {
+            throw new NotFoundHttpException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
         $wallet = $this->walletService->getUserWalletById($id, $user->getId());
-
-//        $wallets = $this->walletService->getUserWallets($user->getId());
-        //todo implement
-
 
         return $this->render('wallet/detail.html.twig', ['wallet' => $wallet]);
     }
@@ -91,6 +93,10 @@ class WalletController extends AbstractController
     #[Route('/wallet/delete/{id}', name: 'app_wallet_delete', methods: ['GEt', 'POST'])]
     public function delete(string $id): RedirectResponse
     {
+        if (!Uuid::isValid($id)) {
+            throw new NotFoundHttpException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -101,27 +107,53 @@ class WalletController extends AbstractController
         return $this->redirectToRoute('app_wallet_index');
     }
 
-    #[Route('/wallet/transfer/from/{fromWalletId}/to/{toWalletId}', name: 'app_wallet_transfer_from_to', methods: ['POST'])]
-    public function transferFromWalletToWallet(string $fromWalletId, string $toWalletId)
+    #[Route('/wallet/transfer-from-to', name: 'app_wallet_transfer_from_to', methods: ['POST'])]
+    public function transferFromWalletToWallet(Request $request): RedirectResponse
     {
-        //todo implement
+        $fromWalletId = (string)$request->request->get('fromWalletId');
+        $toWalletId = (string)$request->request->get('toWalletId');
+        $name = (string)$request->request->get('name');
+        $amountStr = (string)$request->request->get('amount');
+
+        try {
+            $this->walletValidator->validateRequestParamsForTransfer($fromWalletId, $toWalletId, $name, $amountStr);
+        } catch (RuntimeException $ex) {
+            $this->addFlash('error', $ex->getMessage());
+
+            return $this->redirectToRoute('app_wallet_index');
+        }
+
+        $amount = AmountConverter::convert($amountStr);
+
+        if ($amount === 0) {
+            $this->addFlash('error', 'incorrect amount.');
+
+            return $this->redirectToRoute('app_wallet_index');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $status = $this->walletService->transfer($user->getId(), $fromWalletId, $toWalletId, $amount, $name);
+
+        if ($status) {
+            $this->addFlash('success', 'Translation completed successfully.');
+        } else {
+            $this->addFlash('error', 'Translation completion error.');
+        }
+
+        return $this->redirectToRoute('app_wallet_index');
     }
 
     #[Route('/wallet/fill/{id}', name: 'app_wallet_fill', methods: ['POST'])]
     public function fill(string $id, Request $request): RedirectResponse
     {
         $name = (string)$request->request->get('name');
-
-        if (!$name) {
-            $this->addFlash('error', 'Please enter record name.');
-
-            return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
-        }
-
         $amountStr = (string)$request->request->get('amount');
 
-        if (!$amountStr) {
-            $this->addFlash('error', 'Please enter amount.');
+        try {
+            $this->walletValidator->validateRequestParamsForFillBalance($id, $name, $amountStr);
+        } catch (RuntimeException $ex) {
+            $this->addFlash('error', $ex->getMessage());
 
             return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
         }
@@ -134,7 +166,10 @@ class WalletController extends AbstractController
             return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
         }
 
-        $status = $this->walletService->fillBalance($id, $amount, $name);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $status = $this->walletService->fillUserBalance($user->getid(), $id, $amount, $name);
 
         if ($status) {
             $this->addFlash('success', 'Balance successfully filled.');
