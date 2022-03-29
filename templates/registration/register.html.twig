@@ -3,19 +3,26 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="login-page register-page">
+        <div class="container-wrapper">
+            <div class="container ">
+                <h1>Registration</h1>
 
-    {{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.firstName) }}
-    {{ form_row(registrationForm.lastName) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword, {
-        label: 'Password'
-    }) }}
+                {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.firstName) }}
+                {{ form_row(registrationForm.lastName) }}
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    label: 'Password',
+                    label_attr: {'class': 'foo'},
+                    attr: {'class': 'foo'}
+                }) }}
+                <input  class="btn btn-primary" data-controller="form" type="submit" value="Register">
+                {{ form_end(registrationForm) }}
 
-    <input data-controller="form" type="submit" value="Register">
-    {{ form_end(registrationForm) }}
-
-    <br>
-    <a href="{{ path('app_login') }}">Click to login instead</a>
+                <br>
+                <a href="{{ path('app_login') }}">Back to login page</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

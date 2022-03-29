@@ -3,17 +3,20 @@
 {% block body %}
     <br>
 
-    {% for record in records %}
-        <div>Name: {{ record.name }}</div>
-        <div>Amount: {{ record.amountForView }}</div>
-        <div>
-            Transferred: {% if record.fromWallet %}from {{ record.fromWallet.name }} {% endif %}
-            to {{ record.toWallet.name }}
-            at {{ record.createdAt.format('Y-m-d H:i:s') }}
-        </div>
+    <div>
+        {% for record in records %}
+            <div>Name: {{ record.name }}</div>
+            <div>Amount: {{ record.amountForView }}</div>
+            <div>
+                Transferred: {% if record.fromWallet %}from {{ record.fromWallet.name }} {% endif %}
+                to {{ record.toWallet.name }}
+                at {{ record.createdAt.format('Y-m-d H:i:s') }}
+            </div>
 
-        <br>
-        <br>
-    {% endfor %}
+            <br>
+            <br>
+        {% endfor %}
+    </div>
+
 
 {% endblock %}

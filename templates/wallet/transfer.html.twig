@@ -1,28 +1,34 @@
-<form action="{{ path('app_wallet_transfer_from_to') }}" method="post">
-    <label>Amount to transfer
-        <input type="number" value="1000" name="amount" min="0.01" max="99999999" step="0.01" required="required"
-               autocomplete="off">
-    </label>
-
-    <label>From
-        <select name="fromWalletId" autocomplete="off">
-            {% for wallet in wallets %}
-                <option value="{{ wallet.id }}">{{ wallet.walletTypeForView }}: {{ wallet.name }}</option>
-            {% endfor %}
-        </select>
-    </label>
-
-    <label>To
-        <select name="toWalletId" autocomplete="off">
-            {% for index, wallet in wallets %}
-                <option value="{{ wallet.id }}" {% if index == 1 %}selected{% endif %}>{{ wallet.walletTypeForView }}: {{ wallet.name }}</option>
-            {% endfor %}
-        </select>
-    </label>
-
-    <label>Reason
-        <input type="text" name="name" value="Transfer balance" required="required" autocomplete="off">
-    </label>
-
-    <input data-controller="form" type="submit" value="Transfer">
-</form>
+<div class="transfer-form-container">
+    <form action="{{ path('app_wallet_transfer_from_to') }}" method="post">
+        <div><label>Amount to transfer
+                <input type="number" value="1000" name="amount" min="0.01" max="99999999" step="0.01"
+                       required="required"
+                       autocomplete="off">
+            </label></div>
+        <div>
+            <label>From
+                <select name="fromWalletId" autocomplete="off">
+                    {% for wallet in wallets %}
+                        <option value="{{ wallet.id }}">{{ wallet.walletTypeForView }}: {{ wallet.name }}</option>
+                    {% endfor %}
+                </select>
+            </label></div>
+        <div>
+            <label>To
+                <select name="toWalletId" autocomplete="off">
+                    {% for index, wallet in wallets %}
+                        <option value="{{ wallet.id }}"
+                                {% if index == 1 %}selected{% endif %}>{{ wallet.walletTypeForView }}
+                            : {{ wallet.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div>
+            <label>Reason
+                <input type="text" name="name" value="Transfer balance" required="required" autocomplete="off">
+            </label>
+        </div>
+        <input data-controller="form" type="submit" class="btn btn-primary" value="Transfer">
+    </form>
+</div>

@@ -1,27 +1,38 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <a href="{{ path('app_records') }}">Records</a>
+    <div class="main-content">
+        {% if wallets|length > 1 %}
+            {% include 'wallet/transfer.html.twig' %}
+        {% elseif wallets|length == 1 %}
+            <div>
+                Please add at least one wallet to transfer balance between wallets
+            </div>
+        {% endif %}
 
-    <br>
-    <a href="{{ path('app_wallet_create') }}">Create wallet</a>
-    <br>
-    <br>
+        {% if wallets %}
+            <div class="wallet-list">
+                {% for wallet in wallets %}
+                    <div class="wallet-item">
+                        <div class="wallet-item-wrapper">
+                            <div>Name: <b>{{ wallet.name }}</b></div>
+                            <div>Type: <b>{{ wallet.walletTypeForView }}</b></div>
+                            <div>Balance: <b>{{ wallet.balanceForView }}</b></div>
+                            <div>Created at: <b>{{ wallet.createdAt.format('Y-m-d') }}</b></div>
 
-    {% include 'wallet/transfer.html.twig' %}
-    <br>
-    <br>
-
-    {% for wallet in wallets %}
-        <div>Name {{ wallet.name }}</div>
-        <div>Type {{ wallet.walletTypeForView }}</div>
-        <div>Balance {{ wallet.balanceForView }}</div>
-        <div>Created at {{ wallet.createdAt.format('Y-m-d') }}</div>
-
-        <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>
-        <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
-        <br>
-        <br>
-    {% endfor %}
+                            <div class="actions">
+                                <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>
+                                <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-wallet">
+                No wallets found
+            </div>
+        {% endif %}
+    </div>
 
 {% endblock %}

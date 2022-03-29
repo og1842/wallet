@@ -30,7 +30,13 @@
                 </form>
 
                 <br>
-                <a href="{{ path('app_register') }}">Click to register instead</a>
+                <a href="{{ path('app_register') }}">Sign up</a>
+
+                <div class="alternative-login">
+                    Or
+                    <a class="facebook-btn" href="{{ path('connect_facebook_start') }}">Login with Facebook</a>
+                    <a class="google-btn" href="{{ path('connect_google_start') }}">Login with Google</a>
+                </div>
             </div>
         </div>
     </div>

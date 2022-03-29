@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Service\UserService;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -17,13 +17,13 @@ class HomePageController extends AbstractController
     }
 
     #[Route('/', name: 'app_home', methods: ['GET'])]
-    public function home(): Response
+    public function home(): RedirectResponse
     {
         if ($this->userService->isLoggedIn()) {
             return $this->redirectToRoute('app_wallet_index');
         }
 
-        return $this->render('home/index.html.twig');
+        return $this->redirectToRoute('app_login');
     }
 
 }
