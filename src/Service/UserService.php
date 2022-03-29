@@ -28,11 +28,23 @@ class UserService
         $this->userPasswordHasher = $userPasswordHasher;
     }
 
+    /**
+     * Is user logged in
+     *
+     * @return bool
+     */
     public function isLoggedIn(): bool
     {
         return $this->security->isGranted('ROLE_USER');
     }
 
+    /**
+     * Get user by id
+     *
+     * @param int $id
+     *
+     * @return User|null
+     */
     public function getById(int $id): ?User
     {
         return $this->repository->find($id);

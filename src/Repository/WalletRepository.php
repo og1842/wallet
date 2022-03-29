@@ -24,6 +24,48 @@ class WalletRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get user balance
+     *
+     * @param int $userId
+     *
+     * @return int
+     */
+    public function getUserBalance(int $userId): int
+    {
+        $qb = $this->createQueryBuilder('w')
+            ->select('sum(w.balance)')
+            ->where('w.userId = :userId')
+            ->setParameter('userId', $userId);
+
+        try {
+            return (int)$qb->getQuery()->getSingleScalarResult();
+        } catch (Throwable $ex) {
+            return 0;
+        }
+    }
+
+    /**
+     * Get user wallets count by user id
+     *
+     * @param int $userId
+     *
+     * @return int
+     */
+    public function getUserWalletsCount(int $userId): int
+    {
+        $qb = $this->createQueryBuilder('w')
+            ->select('count(w.id)')
+            ->where('w.userId = :userId')
+            ->setParameter('userId', $userId);
+
+        try {
+            return (int)$qb->getQuery()->getSingleScalarResult();
+        } catch (Throwable $ex) {
+            return 0;
+        }
+    }
+
+    /**
      * Get user wallets by user id
      *
      * @param int $userId

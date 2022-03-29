@@ -1,5 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block navigation %}
+    {% if userWalletsCount > 0 %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <form action="{{ path('app_wallet_create') }}" method="post">
         <input type="text" value="" name="wallet_name" required="required" autocomplete="off">

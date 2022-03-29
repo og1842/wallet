@@ -13,7 +13,7 @@ class AmountConverter
      *
      * @example '19.990' -> 1999, '5.1' -> 510, '.1' -> 10
      */
-    public static function convert(string $amount): int
+    public static function convertToDbValue(string $amount): int
     {
         $arr = explode('.', $amount);
         $amount = $arr[0];
@@ -42,5 +42,17 @@ class AmountConverter
         }
 
         return $converted;
+    }
+
+    /**
+     * Convert from DB to show in template
+     *
+     * @param int $amount
+     *
+     * @return float
+     */
+    public static function convertFromDbValue(int $amount): float
+    {
+        return round($amount / 100, 2);
     }
 }

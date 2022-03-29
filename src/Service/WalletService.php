@@ -20,6 +20,50 @@ class WalletService
     }
 
     /**
+     * Get user balance
+     *
+     * @param int $id
+     *
+     * @return float
+     */
+    public function getUserBalance(int $id): float
+    {
+        $userBalance = $this->repository->getUserBalance($id);
+
+        return AmountConverter::convertFromDbValue($userBalance);
+    }
+
+    /**
+     * Calculate user balance by wallets
+     *
+     * @param Wallet[] $wallets
+     *
+     * @return float
+     */
+    public function calculateUserBalanceByWallets(array $wallets): float
+    {
+        $userBalance = 0;
+
+        foreach ($wallets as $wallet) {
+            $userBalance += $wallet->getBalance();
+        }
+
+        return AmountConverter::convertFromDbValue($userBalance);
+    }
+
+    /**
+     * Get user wallets count by user id
+     *
+     * @param int $userId
+     *
+     * @return int
+     */
+    public function getUserWalletsCount(int $userId): int
+    {
+        return $this->repository->getUserWalletsCount($userId);
+    }
+
+    /**
      * Get user wallets by user id
      *
      * @param int $userId

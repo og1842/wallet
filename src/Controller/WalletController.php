@@ -35,18 +35,27 @@ class WalletController extends AbstractController
 
         $wallets = $this->walletService->getUserWallets($user->getId());
 
+        $userBalance = $this->walletService->calculateUserBalanceByWallets($wallets);
+
         if (!$wallets) {
             return $this->redirectToRoute('app_wallet_create');
         }
 
-        return $this->render('wallet/index.html.twig', ['wallets' => $wallets]);
+        return $this->render('wallet/index.html.twig', ['wallets' => $wallets, 'userBalance' => $userBalance]);
     }
 
     #[Route('/wallet/create', name: 'app_wallet_create', methods: ['GET', 'POST'])]
     public function create(Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $userWalletsCount = $this->walletService->getUserWalletsCount($user->getId());
+
         if ($request->isMethod('get')) {
-            return $this->render('wallet/create.html.twig', ['wallet_types' => Wallet::WALLET_TYPES]);
+            return $this->render('wallet/create.html.twig',
+                ['wallet_types' => Wallet::WALLET_TYPES, 'userWalletsCount' => $userWalletsCount]
+            );
         }
 
         $walletName = (string)$request->request->get('wallet_name');
@@ -60,9 +69,6 @@ class WalletController extends AbstractController
 
             return $this->redirectToRoute('app_wallet_index');
         }
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $success = $this->walletService->createByNameAndType($walletName, $walletType, $user);
 
@@ -123,7 +129,7 @@ class WalletController extends AbstractController
             return $this->redirectToRoute('app_wallet_index');
         }
 
-        $amount = AmountConverter::convert($amountStr);
+        $amount = AmountConverter::convertToDbValue($amountStr);
 
         if ($amount === 0) {
             $this->addFlash('error', 'incorrect amount.');
@@ -158,7 +164,7 @@ class WalletController extends AbstractController
             return $this->redirectToRoute('app_wallet_detail', ['id' => $id]);
         }
 
-        $amount = AmountConverter::convert($amountStr);
+        $amount = AmountConverter::convertToDbValue($amountStr);
 
         if ($amount === 0) {
             $this->addFlash('error', 'incorrect amount.');
