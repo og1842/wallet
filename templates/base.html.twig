@@ -55,17 +55,17 @@
         <div class="flash-messages-box">{% include 'flash-messages.twig' %}</div>
     {% endblock %}
 
-    <div class="user-info-box">
-        <div class="user-info-wrapper">
-            {% if app.user %}
+    {% if app.user %}
+        <div class="user-info-box">
+            <div class="user-info-wrapper">
                 <span class="user-name">Hi. <b>{{ app.user.firstName }} {{ app.user.lastName }}</b></span>
                 <span>Email: <b>{{ app.user.email }}</b></span>
-            {% endif %}
-            {% if userBalance is defined %}
-                <span class="total-balance">Total balance: <b>{{ userBalance }}</b></span>
-            {% endif %}
+                {% if userBalance is defined %}
+                    <span class="total-balance">Total balance: <b>{{ userBalance }}</b></span>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% block body %}{% endblock %}
 </div>
