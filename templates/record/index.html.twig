@@ -9,7 +9,7 @@
             {% for record in records %}
                 <div class="wallet-item">
                     <div class="wallet-item-wrapper">
-                        <div>Name: <b>{{ record.name }}</b></div>
+                        <div>Description: <b>{{ record.name }}</b></div>
                         <div>Amount: <b>{{ record.amountForView }}</b></div>
                         <div>
                             Transferred: {% if record.fromWallet %}from <b>{{ record.fromWallet.name }}</b> {% endif %}

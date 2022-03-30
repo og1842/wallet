@@ -17,7 +17,7 @@
                 {% for wallet in wallets %}
                     <div class="wallet-item">
                         <div class="wallet-item-wrapper">
-                            <div>Name: <b>{{ wallet.name }}</b></div>
+                            <div>Description: <b>{{ wallet.name }}</b></div>
                             <div>Type: <b>{{ wallet.walletTypeForView }}</b></div>
                             <div>Balance: <b>{{ wallet.balanceForView }}</b></div>
                             <div>Created at: <b>{{ wallet.createdAt.format('Y-m-d') }}</b></div>

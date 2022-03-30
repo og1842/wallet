@@ -9,7 +9,7 @@
             {% for record in walletRecords %}
                 <div class="wallet-item">
                     <div class="wallet-item-wrapper">
-                        <div>Name: <b>{{ record.name }}</b></div>
+                        <div>Description: <b>{{ record.name }}</b></div>
                         <div>Amount: <b>{{ record.amountForView }}</b></div>
                         <div>Type: <b>{{ record.type(walletId) }}</b></div>
                         <div>Created at: <b>{{ record.createdAt.format('Y-m-d H:i:s') }}</b></div>
