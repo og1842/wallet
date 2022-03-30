@@ -51,10 +51,11 @@ class WalletController extends AbstractController
         $user = $this->getUser();
 
         $userWalletsCount = $this->walletService->getUserWalletsCount($user->getId());
+        $userBalance = $this->walletService->getUserBalance($user->getId());
 
         if ($request->isMethod('get')) {
             return $this->render('wallet/create.html.twig',
-                ['wallet_types' => Wallet::WALLET_TYPES, 'userWalletsCount' => $userWalletsCount]
+                ['wallet_types' => Wallet::WALLET_TYPES, 'userWalletsCount' => $userWalletsCount, 'userBalance' => $userBalance]
             );
         }
 
@@ -92,8 +93,9 @@ class WalletController extends AbstractController
         $user = $this->getUser();
 
         $wallet = $this->walletService->getUserWalletById($id, $user->getId());
+        $userBalance = $this->walletService->getUserBalance($user->getId());
 
-        return $this->render('wallet/detail.html.twig', ['wallet' => $wallet]);
+        return $this->render('wallet/detail.html.twig', ['wallet' => $wallet, 'userBalance' => $userBalance]);
     }
 
     #[Route('/wallet/delete/{id}', name: 'app_wallet_delete', methods: ['GEt', 'POST'])]

@@ -7,14 +7,23 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path('app_wallet_create') }}" method="post">
-        <input type="text" value="" name="wallet_name" required="required" autocomplete="off">
-        <select name="wallet_type" autocomplete="off">
-            {% for type, typeForView in wallet_types %}
-                <option value="{{ type }}">{{ typeForView }}</option>
-            {% endfor %}
-        </select>
-
-        <input data-controller="form" type="submit" value="Create">
-    </form>
+    <div class="create-form-container">
+        <form action="{{ path('app_wallet_create') }}" method="post">
+            <div>
+                <label> Wallet name
+                    <input type="text" value="" name="wallet_name" required="required" autocomplete="off">
+                </label>
+            </div>
+            <div>
+                <label>Wallet type
+                    <select name="wallet_type" class="form-select" autocomplete="off">
+                        {% for type, typeForView in wallet_types %}
+                            <option value="{{ type }}">{{ typeForView }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <input data-controller="form" type="submit" value="Create" class="btn btn-primary">
+        </form>
+    </div>
 {% endblock %}

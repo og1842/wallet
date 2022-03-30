@@ -1,22 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <br>
-
-    <div>
-        {% for record in records %}
-            <div>Name: {{ record.name }}</div>
-            <div>Amount: {{ record.amountForView }}</div>
-            <div>
-                Transferred: {% if record.fromWallet %}from {{ record.fromWallet.name }} {% endif %}
-                to {{ record.toWallet.name }}
-                at {{ record.createdAt.format('Y-m-d H:i:s') }}
-            </div>
-
-            <br>
-            <br>
-        {% endfor %}
-    </div>
-
-
+    <h5>All records information</h5>
+    {% if records %}
+        <div class="wallet-list">
+            {% for record in records %}
+                <div class="wallet-item">
+                    <div class="wallet-item-wrapper">
+                        <div>Name: <b>{{ record.name }}</b></div>
+                        <div>Amount: <b>{{ record.amountForView }}</b></div>
+                        <div>
+                            Transferred: {% if record.fromWallet %}from <b>{{ record.fromWallet.name }}</b> {% endif %}
+                            to <b>{{ record.toWallet.name }}</b>
+                            at <b>{{ record.createdAt.format('Y-m-d H:i:s') }}</b>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-wallet">
+            No records found
+        </div>
+    {% endif %}
 {% endblock %}

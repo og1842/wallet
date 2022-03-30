@@ -1,27 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div>Name {{ wallet.name }}</div>
-    <div>Type {{ wallet.walletTypeForView }}</div>
-    <div>Balance {{ wallet.balanceForView }}</div>
-    <div>Created at {{ wallet.createdAt.format('Y-m-d') }}</div>
+    <div class="wallet-info">
+        <span><b>Wallet information</b></span>
+        <div class="wallet-info-wrapper">
+            <div>Name: <b>{{ wallet.name }}</b></div>
+            <div>Type: <b>{{ wallet.walletTypeForView }}</b></div>
+            <div>Balance: <b>{{ wallet.balanceForView }}</b></div>
+            <div>Created at: <b>{{ wallet.createdAt.format('Y-m-d') }}</b></div>
+        </div>
+    </div>
 
-    Fill balance
-
-    <form action="{{ path('app_wallet_fill', {'id': wallet.id}) }}" method="post">
-        <label>Amount to fill
-            <input type="number" value="1000" name="amount" min="0.01" max="99999999" step="0.01" required="required"
-                   autocomplete="off">
-        </label>
-
-        <label>Record name
-            <input type="text" name="name" value="Fill balance" required="required" autocomplete="off">
-        </label>
-
-        <input data-controller="form" type="submit" value="Fill">
-    </form>
+    <h4>Fill balance</h4>
+    <div class="fill-balance-form-box">
+        <form action="{{ path('app_wallet_fill', {'id': wallet.id}) }}" method="post">
+            <div>
+                <label>Amount to fill
+                    <input type="number" value="1000" name="amount" min="0.01" max="99999999" step="0.01"
+                           required="required"
+                           autocomplete="off">
+                </label>
+            </div>
+            <div>
+                <label>Record name
+                    <input type="text" name="name" value="Fill balance" required="required" autocomplete="off">
+                </label>
+            </div>
+            <input data-controller="form" type="submit" value="Fill" class="btn btn-primary">
+        </form>
+    </div>
 
     <br>
-    <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
-    <a href="{{ path('app_wallet_records', {'walletId': wallet.id}) }}">Wallet records</a>
+    <a href="{{ path('app_wallet_records', {'walletId': wallet.id}) }}" class="btn btn-primary">Wallet records</a>
+    <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}" class="btn btn-danger">Delete wallet</a>
 {% endblock %}

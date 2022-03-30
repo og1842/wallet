@@ -7,7 +7,7 @@
             </label></div>
         <div>
             <label>From
-                <select name="fromWalletId" autocomplete="off">
+                <select name="fromWalletId" class="form-select" autocomplete="off">
                     {% for wallet in wallets %}
                         <option value="{{ wallet.id }}">{{ wallet.walletTypeForView }}: {{ wallet.name }}</option>
                     {% endfor %}
@@ -15,7 +15,7 @@
             </label></div>
         <div>
             <label>To
-                <select name="toWalletId" autocomplete="off">
+                <select name="toWalletId" class="form-select" autocomplete="off">
                     {% for index, wallet in wallets %}
                         <option value="{{ wallet.id }}"
                                 {% if index == 1 %}selected{% endif %}>{{ wallet.walletTypeForView }}

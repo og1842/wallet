@@ -1,9 +1,37 @@
 .main-content {
-  max-width: 1200px;
+  max-width: 1250px;
   margin: 0 auto;
 }
 
-.transfer-form-container {
+.flash-messages-box {
+  max-width: 1250px;
+  margin: 20px auto 20px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.user-info-box {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 55px 20px;
+  display: flex;
+
+  .user-info-wrapper {
+    background: #f5f5f5;
+    display: flex;
+    flex-flow: column;
+    padding: 20px 20px;
+    min-width: 120px;
+  }
+}
+
+
+.transfer-form-container,
+.create-form-container,
+.fill-balance-form-box {
   margin-bottom: 40px;
 
   form {
@@ -37,9 +65,14 @@
   }
 }
 
+.add-wallet-message {
+  margin-bottom: 20px;
+}
+
 .wallet-list {
   margin: -10px;
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: flex-start;
 
@@ -55,9 +88,31 @@
 
     .actions {
       margin-top: 15px;
+
       a {
         margin-right: 10px;
       }
     }
+  }
+}
+
+.fill-balance-form-box{
+  margin-bottom: 0;
+}
+
+.wallet-info {
+  margin-bottom: 20px;
+
+  span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 17px;
+    line-height: normal;
+  }
+
+  .wallet-info-wrapper {
+    display: inline-block;
+    padding: 10px;
+    background: #f0f0f0;
   }
 }

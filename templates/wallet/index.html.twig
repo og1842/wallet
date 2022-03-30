@@ -1,14 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    Total balance {{ userBalance }}
-
     <div class="main-content">
         {% if wallets|length > 1 %}
             {% include 'wallet/transfer.html.twig' %}
         {% elseif wallets|length == 1 %}
-            <div>
-                Please add at least one wallet to transfer balance between wallets
+            <div class="add-wallet-message">
+                <h5>Please add at least one wallet to transfer balance between wallets</h5>
             </div>
         {% endif %}
 
@@ -23,8 +21,8 @@
                             <div>Created at: <b>{{ wallet.createdAt.format('Y-m-d') }}</b></div>
 
                             <div class="actions">
-                                <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}">Wallet detail</a>
-                                <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}">Delete wallet</a>
+                                <a href="{{ path('app_wallet_detail', {'id': wallet.id}) }}" class="btn btn-primary">Wallet detail</a>
+                                <a href="{{ path('app_wallet_delete', {'id': wallet.id}) }}" class="btn btn-danger">Delete wallet</a>
                             </div>
                         </div>
                     </div>

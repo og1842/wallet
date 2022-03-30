@@ -1,12 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for record in walletRecords %}
-        <div>Name: {{ record.name }}</div>
-        <div>Amount: {{ record.amountForView }}</div>
-        <div>Type: {{ record.type(walletId) }}</div>
-        <div>Created at: {{ record.createdAt.format('Y-m-d H:i:s') }}</div>
-        <br>
-    {% endfor %}
-
+    <h5><b>{{ wallet.name }}</b> wallet records </h5>
+    {% if walletRecords %}
+        <div class="wallet-list">
+            {% for record in walletRecords %}
+                <div class="wallet-item">
+                    <div class="wallet-item-wrapper">
+                        <div>Name: <b>{{ record.name }}</b></div>
+                        <div>Amount: <b>{{ record.amountForView }}</b></div>
+                        <div>Type: <b>{{ record.type(walletId) }}</b></div>
+                        <div>Created at: <b>{{ record.createdAt.format('Y-m-d H:i:s') }}</b></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-wallet">
+            No records found
+        </div>
+    {% endif %}
 {% endblock %}
